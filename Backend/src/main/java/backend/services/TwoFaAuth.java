@@ -55,9 +55,4 @@ public class TwoFaAuth {
             .orElse(null);
         return (toVerify.getCode().equals(code));
     }
-    
-    public static void main(String[] args) throws IOException {
-        TwoFaAuth auth = new TwoFaAuth();
-        System.out.println(auth.validateCode("john.doe2@gmail.com","9314"));
-    }
 }
