@@ -11,11 +11,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class AuthenticationController {
     @Autowired
@@ -27,15 +29,7 @@ public class AuthenticationController {
     @Autowired
     private TwoFaAuth twoFaAuth;
     
-    
-    @PostMapping("/")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public long hello(@RequestHeader(name="Authorization") String token) throws JsonProcessingException {
         
-        token = token.substring(7);
-        return jwtService.getAccountNumber(token); 
-    } 
-    
     @PostMapping("/authentication/validate")
     public String validate(@RequestBody VerifyRequest verifyRequest) throws IOException{
         User user = userService.getUserByEmail(verifyRequest.getEmail());

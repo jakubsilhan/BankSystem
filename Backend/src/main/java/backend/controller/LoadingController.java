@@ -8,10 +8,13 @@ import backend.services.JwtService;
 import backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+
+@CrossOrigin(origins = "*")
 @RestController
 public class LoadingController {
     @Autowired
