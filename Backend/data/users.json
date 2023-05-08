@@ -4,13 +4,13 @@
       "username": "Jakub Silhan",
       "email": "john.doe1@gmail.com",
       "password": "12345",
-      "accountNumber": 1
+      "accountNumber": 12345
 	},
 	{
       "id":2,
       "username": "Pavel Vacha",
       "email": "john.doe2@gmail.com",
       "password": "12345",
-      "accountNumber": 2
+      "accountNumber": 54321
 	}
 ]
