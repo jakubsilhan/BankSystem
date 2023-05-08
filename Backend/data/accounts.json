@@ -4,29 +4,14 @@
     "accountNumber" : 0,
     "currency" : "Česká koruna",
     "abbreviation" : "CZK",
-    "amount" : 1198.37
+    "amount" : 1194.4399999999998
   }, {
     "accountNumber" : 0,
     "currency" : "Dolar",
     "abbreviation" : "USD",
-    "amount" : 73.24
+    "amount" : 68.74
   } ],
   "movements" : [ {
-    "amount" : "54 CZK",
-    "day" : "2023-02-24"
-  }, {
-    "amount" : "34 CZK",
-    "day" : "2023-05-07"
-  }, {
-    "amount" : "12 CZK",
-    "day" : "2023-05-07"
-  }, {
-    "amount" : "12 CZK",
-    "day" : "2023-05-07"
-  }, {
-    "amount" : "12 CZK",
-    "day" : "2023-05-07"
-  }, {
     "amount" : "+ 24 CZK",
     "day" : "2023-05-07"
   }, {
@@ -58,6 +43,30 @@
     "day" : "2023-05-08"
   }, {
     "amount" : "- 2.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 10.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 5.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 5.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 2.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 78.53 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 4.5 USD",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "+ 120.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 23.4 CZK",
     "day" : "2023-05-08"
   } ]
 }, {

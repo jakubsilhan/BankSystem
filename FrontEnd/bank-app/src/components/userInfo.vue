@@ -1,6 +1,6 @@
 <template>
     <div class = "infoBox">
-        <p> jméno: {{ user.name }}<br>
+        <p> jméno: {{ user.username }}<br>
             email: {{ user.email }} <br>
             číslo účtu: {{ user.accountNumber }}
         </p>
