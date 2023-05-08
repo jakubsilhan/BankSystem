@@ -6,11 +6,11 @@ public class Balance {
     long accountNumber;
     String currency;
     String abbreviation;
-    int amount;
+    double amount;
 
     public Balance(){};
     
-    public Balance(long accountNumber, String currency, String abbreviation, int amount) {
+    public Balance(long accountNumber, String currency, String abbreviation, double amount) {
         this.accountNumber = accountNumber;
         this.currency = currency;
         this.abbreviation = abbreviation;
@@ -29,7 +29,7 @@ public class Balance {
         return abbreviation;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -45,7 +45,7 @@ public class Balance {
         this.abbreviation = abbreviation;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
     

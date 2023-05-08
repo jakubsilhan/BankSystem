@@ -3,7 +3,10 @@ package backend.controller;
 
 import backend.dto.PaymentDto;
 import backend.services.AccountService;
+import backend.services.CurrencyExchangeService;
 import backend.services.JwtService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,21 +20,34 @@ public class PaymentController {
     AccountService accountService;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    CurrencyExchangeService exchangeService;
     
     @PostMapping("/payment/withdraw")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void Withdraw(@RequestHeader(name="Authorization") String token, @RequestBody PaymentDto payment){
+    public String Withdraw(@RequestHeader(name="Authorization") String token, @RequestBody PaymentDto payment){
         token = token.substring(7);
         long accountNumber = jwtService.getAccountNumber(token);
-        accountService.withdraw(accountNumber, payment);
+        return accountService.withdraw(accountNumber, payment);
     }
     
     @PostMapping("/payment/deposit")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void Deposit(@RequestHeader(name="Authorization") String token, @RequestBody PaymentDto payment){
+    public String Deposit(@RequestHeader(name="Authorization") String token, @RequestBody PaymentDto payment){
         token = token.substring(7);
         long accountNumber = jwtService.getAccountNumber(token);
-        accountService.deposit(accountNumber, payment);
+        return accountService.deposit(accountNumber, payment);
+    }
+    
+    @PostMapping("/payment/currencies")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String getCurrencies(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            return objectMapper.writeValueAsString(exchangeService.getExistingCurrencies());
+        }catch (IOException ex){
+            return "Nepodařilo se načíst měny";
+        }
     }
     
 }

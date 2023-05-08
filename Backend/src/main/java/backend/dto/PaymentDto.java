@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentDto {
     private String currencyAbbreviation;
-    private int ammount;
+    private double ammount;
 }

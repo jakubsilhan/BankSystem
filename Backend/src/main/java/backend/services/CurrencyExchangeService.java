@@ -8,7 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CurrencyExchangeService {
     
     private static final String DATAFILE = System.getProperty("user.dir") + File.separator + "data"+ File.separator + "currencies.txt";
@@ -33,14 +35,30 @@ public class CurrencyExchangeService {
         reader.close();
         return exchangeRates;
     }
-
-    public int ConvertToCZK(String to, int ammount) throws IOException{
+    
+    public List<String> getExistingCurrencies() throws IOException{
+        File file = new File(DATAFILE);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        String date = reader.readLine();
+        String header = reader.readLine();
+        List<String> currencies = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("\\|");
+            String abbreviation = parts[3];
+            currencies.add(abbreviation);
+        }
+        reader.close();
+        return currencies;
+    }
+        
+    public double ConvertToCZK(String to, double ammount) throws IOException{
         List<CurrencyExchangeRate> rates = getExchangeRates();
         CurrencyExchangeRate rateTo = rates.stream()
                 .filter(r -> r.getCode().equals(to))
                 .findFirst()
                 .orElse(null);
-        return (int)rateTo.getRate()*ammount;       
+        return rateTo.getRate()*ammount;       
         
     }
 }

@@ -9,14 +9,10 @@ import backend.repositories.AccountRepository;
 import backend.repositories.JsonAccountRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,42 +36,46 @@ public class JsonAccountService implements AccountService{
     }
     
     @Override
-    public void withdraw(long accountNumber, PaymentDto payment){
+    public String withdraw(long accountNumber, PaymentDto payment){
         Account account = findAccountByNumber(accountNumber);
         Balance balance = account.getBalances().stream()
                 .filter(b -> b.getAbbreviation().equals(payment.getCurrencyAbbreviation()))
                 .findFirst()
                 .orElse(null);
-        if(balance==null || balance.getAmount()<payment.getAmmount()){            
+        if(balance==null || !(balance.getAbbreviation().equals(payment.getCurrencyAbbreviation())) && balance.getAmount()<payment.getAmmount()){            
             try {
-                int exchanged = exchangeService.ConvertToCZK(payment.getCurrencyAbbreviation(), payment.getAmmount());
+                double exchanged = exchangeService.ConvertToCZK(payment.getCurrencyAbbreviation(), payment.getAmmount());
                 balance = account.getBalances().stream()
                     .filter(b -> b.getAbbreviation().equals("CZK"))
                     .findFirst()
                     .orElse(null);
                 if(balance.getAmount()<exchanged){
-                    throw new IllegalArgumentException("Nedostatek prostredku");
+                    return "Nedostatek prostředků";
                 }
                 payment.setCurrencyAbbreviation("CZK");
                 payment.setAmmount(exchanged);
             } catch (IOException ex) {
-                Logger.getLogger(JsonAccountService.class.getName()).log(Level.SEVERE, null, ex);
-                return;
+                return "Nepovedený přístup k databázi měn";
             }
         }
+        if(balance.getAmount()<payment.getAmmount()){
+            return "Nedostatek prostředků";
+        }
+        payment.setAmmount(roundDouble(payment.getAmmount()));
         balance.setAmount(balance.getAmount()-payment.getAmmount());
         // Add a new movement for the deposit
         LocalDate date = LocalDate.now();        
         account.addMovement(new Movement("- "+payment.getAmmount()+" "+payment.getCurrencyAbbreviation(),date.format(DateTimeFormatter.ISO_DATE)));
         try{
             repository.saveAccounts(accounts);
-        }catch (Exception e){
-            
+            return "Platba úspěšná";
+        }catch (IOException e){
+            return "Nepovedený přístup k databázi účtů";
         }
     }
     
     @Override
-    public void deposit(long accountNumber, PaymentDto payment){
+    public String deposit(long accountNumber, PaymentDto payment){
         Account account = findAccountByNumber(accountNumber);
         Balance balance = account.getBalances().stream()
                 .filter(b -> b.getAbbreviation().equals(payment.getCurrencyAbbreviation()))
@@ -83,7 +83,7 @@ public class JsonAccountService implements AccountService{
                 .orElse(null);
         if(balance == null){
             try {
-                int exchanged = exchangeService.ConvertToCZK(payment.getCurrencyAbbreviation(), payment.getAmmount());
+                double exchanged = exchangeService.ConvertToCZK(payment.getCurrencyAbbreviation(), payment.getAmmount());
                 balance = account.getBalances().stream()
                     .filter(b -> b.getAbbreviation().equals("CZK"))
                     .findFirst()
@@ -91,18 +91,19 @@ public class JsonAccountService implements AccountService{
                 payment.setCurrencyAbbreviation("CZK");
                 payment.setAmmount(exchanged);
             } catch (IOException ex) {
-                Logger.getLogger(JsonAccountService.class.getName()).log(Level.SEVERE, null, ex);
-                return;
+                return "Nepovedený přístup k databázi měn";
             }
         }
+        payment.setAmmount(roundDouble(payment.getAmmount()));
         balance.setAmount(balance.getAmount()+payment.getAmmount());
         // Add a new movement for the deposit
         LocalDate date = LocalDate.now();        
         account.addMovement(new Movement("+ "+payment.getAmmount()+" "+payment.getCurrencyAbbreviation(),date.format(DateTimeFormatter.ISO_DATE)));
         try{
             repository.saveAccounts(accounts);
-        }catch (Exception e){
-            
+            return "Vklad úspěšný";
+        }catch (IOException e){
+            return "Nepovedený přístup k databázi účtů";
         }    
     }
     
@@ -128,9 +129,7 @@ public class JsonAccountService implements AccountService{
         }
     }
     
-    public static void main(String[] args) throws IOException {
-        JsonAccountService jsonService = new JsonAccountService();
-        PaymentDto payment = new PaymentDto("BRL", 1);
-        jsonService.withdraw(12345, payment);
+    private double roundDouble(double number){
+        return Math.round(number * 100.0) / 100.0;
     }
 }
