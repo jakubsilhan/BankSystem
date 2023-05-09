@@ -34,6 +34,7 @@ import balanceDisplay from '@/components/balanceDisplay.vue';
 import axios from 'axios'
 import PaymentForm from '@/components/paymentForm.vue';
 import DepositForm from '@/components/depositForm.vue';
+import router from '@/router';
 export default{
   name: 'acountView',
   components: {
@@ -61,6 +62,11 @@ export default{
   },
   created() {
     const token = localStorage.getItem('jwt');
+
+    if (!token) {
+    router.push('/')
+  }
+
     // Load balances
     axios.post('http://localhost:8081/loading/balances', {}, { headers: { Authorization: `Bearer ${token}` } })
       .then(response => {
