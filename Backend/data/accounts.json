@@ -4,7 +4,7 @@
     "accountNumber" : 0,
     "currency" : "Česká koruna",
     "abbreviation" : "CZK",
-    "amount" : 1194.4399999999998
+    "amount" : 1194.4299999999998
   }, {
     "accountNumber" : 0,
     "currency" : "Dolar",
@@ -68,6 +68,9 @@
   }, {
     "amount" : "- 23.4 CZK",
     "day" : "2023-05-08"
+  }, {
+    "amount" : "- 0.01 CZK",
+    "day" : "2023-05-09"
   } ]
 }, {
   "accountNumber" : 54321,

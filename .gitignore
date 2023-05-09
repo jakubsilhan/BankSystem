@@ -25,6 +25,7 @@ pnpm-debug.log*
 
 HELP.md
 target/
+Backend/src/main/resources/application.properties
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

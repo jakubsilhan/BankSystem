@@ -11,16 +11,26 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class TwoFaAuth {
-    
     private static final String DATAPATH = System.getProperty("user.dir") + File.separator + "data"+ File.separator + "2fa.json";
-    
+        
+    @Autowired
+    JavaMailSender emailSender;
+        
     public void sendMail(String mail, String code){
-        //complete this method
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("kubix.development@gmail.com");
+        message.setTo(mail);
+        message.setSubject("Verification code");
+        message.setText("The verification code for you bank is: " + code);
+        emailSender.send(message);
     }
     
     public String generateCode(){
@@ -29,7 +39,7 @@ public class TwoFaAuth {
         return code;
     }
     
-    public void saveCode(String email) throws IOException{
+    public String saveCode(String email) throws IOException{
         EmailCode code = new EmailCode(email, generateCode());
         List<EmailCode> objects = new ObjectMapper().readValue(Paths.get(DATAPATH).toFile(), new TypeReference<List<EmailCode>>(){});
         EmailCode toUpdate = objects.stream()
@@ -45,6 +55,7 @@ public class TwoFaAuth {
         
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         Files.write(Paths.get(DATAPATH), mapper.writeValueAsBytes(objects));
+        return code.getCode();
     }
     
     public boolean validateCode(String email, String code) throws IOException{
@@ -55,4 +66,5 @@ public class TwoFaAuth {
             .orElse(null);
         return (toVerify.getCode().equals(code));
     }
+    
 }
