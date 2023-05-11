@@ -24,8 +24,8 @@ jobs:
           distribution: 'oracle' # Alternative distribution options are available.
       - name: Adding secret
         run: |
-            printf ${{secrets.SECRET_PASSWORD}} >> src/main/resources/application.properties
-            printf "AHOJ SVETE" >> src/main/resources/application.properties
+            printf \n${{secrets.SECRET_PASSWORD}} >> src/main/resources/application.properties
+            printf \n${{secrets.SECRET_TOKEN}}  >> src/main/resources/application.properties
             cat src/main/resources/application.properties
         shell: bash
       - name: Cache SonarCloud packages
