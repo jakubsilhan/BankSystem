@@ -26,6 +26,7 @@ jobs:
         run: |
             printf ${{secrets.SECRET_PASSWORD}} >> src/main/resources/application.properties
             printf ${{secrets.SECRET_TOKEN}} >> src/main/resources/application.properties
+            cat src/main/resources/application.properties
         shell: bash
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
