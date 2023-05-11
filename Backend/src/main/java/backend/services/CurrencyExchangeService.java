@@ -15,6 +15,16 @@ public class CurrencyExchangeService {
     
     private static final String DATAFILE = System.getProperty("user.dir") + File.separator + "data"+ File.separator + "currencies.txt";
     
+    public String getRateDate() throws IOException{
+        File file = new File(DATAFILE);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        String date = reader.readLine();
+        String[] split = date.split(" ");
+        return split[0];
+        
+    }
+    
     public List<CurrencyExchangeRate> getExchangeRates() throws IOException {
         File file = new File(DATAFILE);
         BufferedReader reader = new BufferedReader(new FileReader(file));

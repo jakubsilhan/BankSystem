@@ -26,7 +26,6 @@
 </template>
   
   <script>
-  import axios from 'axios'
   export default {
     name: 'loginForm',
     data() {
@@ -41,19 +40,21 @@
       async submitUserDetails() {
         event.preventDefault();
         try{
-              // send user details to backend for validation
-          const response = await axios.post('http://localhost:8081/authentication/check', {
+          const data = await this.$root.authApiCall("/authentication/check",{
           email: this.email,
           password: this.password
-          })
-          if (response.data == true) {
+          });
+
+          if (data) {
             // user details are valid, show verification code form
             this.verified = true
-          } else if (response.data==false) {
+          } else {
             // user details are invalid, display error message
             alert('Invalid email or password')
             console.error('Invalid user details')
           }
+
+    
         }catch(error){
           console.error(error);
           alert('Error occured while processing your request.')
@@ -61,14 +62,13 @@
       },
       async submitVerificationCode(){
         event.preventDefault();
-        const response = await axios.post('http://localhost:8081/authentication/validate', {
+        const data = await this.$root.authApiCall("/authentication/validate",{
           email: this.email,
           code: this.verificationCode
-        })
-        if (response.data != "Invalid code") {
+        });
+        if (data != "Invalid code") {
           // verification code is valid, get JWT token
           //const data = await response.json()
-          const data = response.data
           localStorage.setItem('jwt', data)
           // redirect to account view
           this.$router.push('/account')

@@ -1,4 +1,5 @@
 <template>
+    <h1>Platba</h1>
     <form @submit="handleSubmit" class="add-form">
         <div class="form-control">
             <label>Množství</label>
@@ -15,7 +16,6 @@
     </form>
 </template>
 <script>
-import axios from 'axios'
 export default{
     name: 'paymentForm',
     data(){
@@ -31,27 +31,26 @@ export default{
         }
     },
     methods: {
-        handleSubmit(){
-            const token = localStorage.getItem('jwt');
+        async handleSubmit(){
   
             const payment = {
             currencyAbbreviation: this.selectedOption,
             ammount: this.amount,
             }
-
-            axios.post('http://localhost:8081/payment/withdraw', payment, { headers: { Authorization: `Bearer ${token}` } })
-            .then(response => {
-                alert(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            const data = await this.$root.authApiCall("/payment/withdraw",payment);
+            alert(data)
             this.$emit('form-submitted', this.selectedOption);
         }
     }
 }
 </script>
 <style scoped>
+.form-control label {
+    display: block;
+}
+input{
+    margin-left: 1px;
+}
 select{
     margin-top: 10px;
     margin-bottom: 10px;

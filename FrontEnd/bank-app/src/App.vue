@@ -5,8 +5,22 @@
 
 <script>
 import pageFooter from './components/pageFooter.vue'
+import  axios from 'axios';
 export default {
   name: 'App',
+  methods: {
+    getToken() {
+      console.log(localStorage.getItem("jwt"))
+      return localStorage.getItem("jwt");
+
+    },
+    // endpoint ve formátu /api/blablba
+    async authApiCall(endpoint = "", body={}) {
+      const response = await axios.post(`http://localhost:8081${endpoint}`, body, { headers: { Authorization: `Bearer ${this.getToken()}` } })
+      return response.data;
+    },
+  },
+
   components: {
     pageFooter
   }

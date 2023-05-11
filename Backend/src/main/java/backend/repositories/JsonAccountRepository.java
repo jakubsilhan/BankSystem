@@ -15,6 +15,8 @@ public class JsonAccountRepository implements AccountRepository {
     
     private final String jsonFilePath = System.getProperty("user.dir") + File.separator + "data" + File.separator + "accounts.json";
     private final ObjectMapper mapper = new ObjectMapper();
+    
+    public JsonAccountRepository(){};
 
     @Override
     public List<Account> loadAccounts() throws IOException {

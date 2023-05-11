@@ -1,19 +1,17 @@
 <template>
-  <div class = "mainColumn">
+  <div class="mainColumn">
     <header>
       <h1>Bankovní aplikace</h1>
     </header>
-    <div class = "headerRow">
-      <div class = "buttonColumn">
-        <basicButton class = "paymentButtons" text = "Platba" @click="showPaymentForm=true"></basicButton>
-        <basicButton class = "paymentButtons" text = "Vklad" @click="showDepositForm=true"></basicButton>
+    <div class="headerRow">
+      <div class="buttonColumn">
+        <basicButton class="paymentButtons" text="Platba" @click="showPaymentForm = true"></basicButton>
+        <basicButton class="paymentButtons" text="Vklad" @click="showDepositForm = true"></basicButton>
       </div>
-      <userInfo 
-        :user="user"
-      ></userInfo>
+      <userInfo :user="user" :currencyDate="currencyDate"></userInfo>
     </div>
-    <balanceDisplay :balances = "balances"></balanceDisplay>
-    <MovementList :movements = "reversedMovements"/>
+    <balanceDisplay :balances="balances"></balanceDisplay>
+    <MovementList :movements="reversedMovements" />
     <div v-if="showPaymentForm" class="popup">
       <PaymentForm :options="currencies" @form-submitted="refresh"></PaymentForm>
     </div>
@@ -21,7 +19,7 @@
       <DepositForm :options="currencies" @form-submitted="refresh"></DepositForm>
     </div>
     <div v-if="showDepositForm">
-    
+
     </div>
   </div>
 </template>
@@ -31,11 +29,10 @@ import basicButton from '@/components/basicButton.vue';
 import MovementList from '@/components/movementList.vue';
 import userInfo from '@/components/userInfo.vue';
 import balanceDisplay from '@/components/balanceDisplay.vue';
-import axios from 'axios'
 import PaymentForm from '@/components/paymentForm.vue';
 import DepositForm from '@/components/depositForm.vue';
 import router from '@/router';
-export default{
+export default {
   name: 'acountView',
   components: {
     basicButton,
@@ -44,108 +41,76 @@ export default{
     balanceDisplay,
     PaymentForm,
     DepositForm
-},
-  data(){
-    return{
+  },
+
+
+  data() {
+    return {
       user: null,
       movements: [],
       balances: [],
-      currencies: ["CZK","AUD","BRL","BGN","CNY","DKK","EUR","PHP","HKD","INR","IDR","ISK","ILS","JPY","ZAR","CAD","KRW","HUF","MYR","MXN","XDR","NOK","NZD","PLN","RON","SGD","SEK","CHF","THB","TRY","USD","GBP"],
+      currencies: ["CZK", "AUD", "BRL", "BGN", "CNY", "DKK", "EUR", "PHP", "HKD", "INR", "IDR", "ISK", "ILS", "JPY", "ZAR", "CAD", "KRW", "HUF", "MYR", "MXN", "XDR", "NOK", "NZD", "PLN", "RON", "SGD", "SEK", "CHF", "THB", "TRY", "USD", "GBP"],
+      currencyDate: "",
       showPaymentForm: false,
       showDepositForm: false,
     }
   },
-  computed:{
+  computed: {
     reversedMovements() {
-        return this.movements.slice().reverse()
+      return this.movements.slice().reverse()
     }
   },
-  created() {
-    const token = localStorage.getItem('jwt');
+  async created() {
+    const token = this.$root.getToken();
 
     if (!token) {
-    router.push('/')
-  }
+      router.push('/')
+    }
 
-    // Load balances
-    axios.post('http://localhost:8081/loading/balances', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then(response => {
-      this.balances = response.data;
-    })
-    .catch(error => {
-      console.error(error);
-    });
-    // Load movements
-    axios.post('http://localhost:8081/loading/movements', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then(response => {
-        this.movements = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-    });
-    // Load user info
-    axios.post('http://localhost:8081/loading/user', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then(response => {
-        this.user = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-    });
+    this.currencyDate = await this.$root.authApiCall("/loading/rate");
+    this.balances = await this.$root.authApiCall("/loading/balances");
+    this.movements = await this.$root.authApiCall("/loading/movements");
+    this.user = await this.$root.authApiCall("/loading/user");
+
   },
-  refresh(){
-    const token = localStorage.getItem('jwt');
+  async refresh() {
     // Load balances
-    axios.post('http://localhost:8081/loading/balances', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then(response => {
-      this.balances = response.data;
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    this.balances = await this.$root.authApiCall("/loading/balances");
     // Load movements
-    axios.post('http://localhost:8081/loading/movements', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then(response => {
-        this.movements = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-    });
+    this.movements = await this.$root.authApiCall("/loading/movements");
     // Load user info
-    axios.post('http://localhost:8081/loading/user', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then(response => {
-        this.user = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-    });
-    this.showDepositForm=false
-    this.showPaymentForm=false
+    this.user = await this.$root.authApiCall("/loading/user");
+    // Refresh currency date
+    this.currencyDate = await this.$root.authApiCall("/loading/rate");
+    this.showDepositForm = false
+    this.showPaymentForm = false
   }
 }
 </script>
 
 <style scoped>
-.mainColumn{
+.mainColumn {
   display: flex;
   flex-direction: column;
   margin-left: 5px;
   margin-right: 5px;
 }
 
-.headerRow{
+.headerRow {
   display: flex;
   flex-direction: row;
 }
 
-.buttonColumn{
+.buttonColumn {
   display: flex;
   flex-direction: column;
 }
 
-.paymentButtons{
-    width: 200px;
-    height: 50px;
+.paymentButtons {
+  width: 200px;
+  height: 50px;
 }
+
 .popup {
   position: fixed;
   top: 50%;

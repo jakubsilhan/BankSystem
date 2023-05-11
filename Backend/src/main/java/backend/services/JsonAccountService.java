@@ -13,22 +13,31 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JsonAccountService implements AccountService{
     
     CurrencyExchangeService exchangeService = new CurrencyExchangeService();
-    private List<Account> accounts;
     ObjectMapper objectMapper = new ObjectMapper();
-    AccountRepository repository = new JsonAccountRepository();
+    @Autowired
+    AccountRepository repository;
+    private List<Account> accounts;
     
     public JsonAccountService() throws IOException {
-        accounts = repository.loadAccounts();
+        //accounts = repository.loadAccounts();
     }
     
     @Override
     public Account findAccountByNumber(long accountNumber){
+        try {
+            accounts = repository.loadAccounts();
+        } catch (IOException ex) {
+            Logger.getLogger(JsonAccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return accounts.stream()
                 .filter(a -> a.getAccountNumber() == accountNumber)
                 .findFirst()
@@ -38,6 +47,7 @@ public class JsonAccountService implements AccountService{
     @Override
     public String withdraw(long accountNumber, PaymentDto payment){
         Account account = findAccountByNumber(accountNumber);
+        payment.setAmmount(Math.abs(payment.getAmmount()));
         Balance balance = account.getBalances().stream()
                 .filter(b -> b.getAbbreviation().equals(payment.getCurrencyAbbreviation()))
                 .findFirst()
@@ -62,7 +72,7 @@ public class JsonAccountService implements AccountService{
             return "Nedostatek prostředků";
         }
         payment.setAmmount(roundDouble(payment.getAmmount()));
-        balance.setAmount(balance.getAmount()-payment.getAmmount());
+        balance.setAmount(roundDouble(balance.getAmount()-payment.getAmmount()));
         // Add a new movement for the deposit
         LocalDate date = LocalDate.now();        
         account.addMovement(new Movement("- "+payment.getAmmount()+" "+payment.getCurrencyAbbreviation(),date.format(DateTimeFormatter.ISO_DATE)));
@@ -77,6 +87,7 @@ public class JsonAccountService implements AccountService{
     @Override
     public String deposit(long accountNumber, PaymentDto payment){
         Account account = findAccountByNumber(accountNumber);
+        payment.setAmmount(Math.abs(payment.getAmmount()));
         Balance balance = account.getBalances().stream()
                 .filter(b -> b.getAbbreviation().equals(payment.getCurrencyAbbreviation()))
                 .findFirst()
@@ -95,7 +106,7 @@ public class JsonAccountService implements AccountService{
             }
         }
         payment.setAmmount(roundDouble(payment.getAmmount()));
-        balance.setAmount(balance.getAmount()+payment.getAmmount());
+        balance.setAmount(roundDouble(balance.getAmount()+payment.getAmmount()));
         // Add a new movement for the deposit
         LocalDate date = LocalDate.now();        
         account.addMovement(new Movement("+ "+payment.getAmmount()+" "+payment.getCurrencyAbbreviation(),date.format(DateTimeFormatter.ISO_DATE)));
@@ -129,7 +140,7 @@ public class JsonAccountService implements AccountService{
         }
     }
     
-    private double roundDouble(double number){
+    public double roundDouble(double number){
         return Math.round(number * 100.0) / 100.0;
     }
 }

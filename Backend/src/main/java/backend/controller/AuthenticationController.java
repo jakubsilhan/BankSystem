@@ -43,11 +43,12 @@ public class AuthenticationController {
     @PostMapping("/authentication/check")
     public boolean checkDetails(@RequestBody AuthRequest authRequest) throws IOException{
         User user = userService.getUserByEmail(authRequest.getEmail());
-        System.out.println("Funguje?");
+        if (user == null){
+            return false;
+        }
         if (user.getPassword().equals(authRequest.getPassword())){
             String code = twoFaAuth.saveCode(authRequest.getEmail());
             //send mail
-            System.out.println(code);
             twoFaAuth.sendMail(authRequest.getEmail(), code);
             return true;
         }
