@@ -20,9 +20,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class TwoFaAuth {
     private static final String DATAPATH = System.getProperty("user.dir") + File.separator + "data"+ File.separator + "2fa.json";
-        
+    private static File dataFile;    
+    
     @Autowired
     JavaMailSender emailSender;
+    
+    public TwoFaAuth(){
+      this.dataFile = new File(DATAPATH);  
+    };
+    
+    public TwoFaAuth(File file){
+        this.dataFile = file;
+    }
         
     public void sendMail(String mail, String code){
         SimpleMailMessage message = new SimpleMailMessage();
@@ -41,7 +50,8 @@ public class TwoFaAuth {
     
     public String saveCode(String email) throws IOException{
         EmailCode code = new EmailCode(email, generateCode());
-        List<EmailCode> objects = new ObjectMapper().readValue(Paths.get(DATAPATH).toFile(), new TypeReference<List<EmailCode>>(){});
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<EmailCode> objects = objectMapper.readValue(this.dataFile, new TypeReference<List<EmailCode>>(){});
         EmailCode toUpdate = objects.stream()
             .filter(obj -> obj.getEmail().equals(code.getEmail()))
             .findFirst()
@@ -54,16 +64,20 @@ public class TwoFaAuth {
         }            
         
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        Files.write(Paths.get(DATAPATH), mapper.writeValueAsBytes(objects));
+        //Files.write(this.dataFile.toPath(), mapper.writeValueAsBytes(objects));
+        mapper.writeValue(dataFile, objects);
         return code.getCode();
     }
     
     public boolean validateCode(String email, String code) throws IOException{
-        List<EmailCode> objects = new ObjectMapper().readValue(Paths.get(DATAPATH).toFile(), new TypeReference<List<EmailCode>>(){});
+        List<EmailCode> objects = new ObjectMapper().readValue(this.dataFile, new TypeReference<List<EmailCode>>(){});
         EmailCode toVerify = objects.stream()
             .filter(obj -> obj.getEmail().equals(email))
             .findFirst()
             .orElse(null);
+        if (toVerify == null) {
+            return false;
+        }
         return (toVerify.getCode().equals(code));
     }
     

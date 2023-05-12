@@ -20,7 +20,7 @@ import org.mockito.MockitoAnnotations;
 
 public class TextExchangeRateRepositoryTests {
     
-    private static File testFile = new File("test.txt");
+    private static File testFile = new File(System.getProperty("user.dir") + File.separator + "data" + File.separator + "test.txt");
     private TextExchangeRateRepository repository;
 
     @BeforeEach
