@@ -30,7 +30,7 @@ public class CurrencyExchangeRate {
         return amount;
     }
 
-    public String getCode() {
+    public String getAbbreviation() {
         return abbreviation;
     }
 
@@ -50,7 +50,7 @@ public class CurrencyExchangeRate {
         this.amount = amount;
     }
 
-    public void setCode(String code) {
+    public void setAbbreviation(String code) {
         this.abbreviation = code;
     }
 
