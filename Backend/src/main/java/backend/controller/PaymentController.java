@@ -40,16 +40,16 @@ public class PaymentController {
         long accountNumber = jwtService.getAccountNumber(token);
         return accountService.deposit(accountNumber, payment);
     }
-    
-    @PostMapping("/payment/currencies")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public String getCurrencies(){
-        ObjectMapper objectMapper = new ObjectMapper();
-        try{
-            return objectMapper.writeValueAsString(exchangeService.getExistingCurrencies());
-        }catch (IOException ex){
-            return "Nepodařilo se načíst měny";
-        }
-    }
+//    
+//    @PostMapping("/payment/currencies")
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    public String getCurrencies(){
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try{
+//            return objectMapper.writeValueAsString(exchangeService.getExistingCurrencies());
+//        }catch (IOException ex){
+//            return "Nepodařilo se načíst měny";
+//        }
+//    }
     
 }

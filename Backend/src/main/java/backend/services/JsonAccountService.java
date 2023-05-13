@@ -21,13 +21,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonAccountService implements AccountService{
     
-    CurrencyExchangeService exchangeService = new CurrencyExchangeService();
-    ObjectMapper objectMapper = new ObjectMapper();
+    //CurrencyExchangeService exchangeService = new CurrencyExchangeService();
+    //ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     AccountRepository repository;
+    @Autowired
+    CurrencyExchangeService exchangeService;
+    @Autowired
+    ObjectMapper objectMapper;
     private List<Account> accounts;
     
-    public JsonAccountService() throws IOException {
+    public JsonAccountService(){
         //accounts = repository.loadAccounts();
     }
     

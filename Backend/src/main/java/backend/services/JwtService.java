@@ -17,9 +17,14 @@ import org.springframework.stereotype.Component;
 public class JwtService {
     
     @Value("${token.secret.key}")
-    public String SECRET;
+    private String SECRET;
 
-
+    public JwtService(){};
+    
+    public void setSecret(String key){
+        this.SECRET = key;
+    }
+    
     public String generateToken(String userName, long accountNumber){
         Map<String,Object> claims=new HashMap<>();
         return createToken(claims,userName, accountNumber);
