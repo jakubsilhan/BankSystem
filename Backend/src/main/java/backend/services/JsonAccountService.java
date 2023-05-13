@@ -40,7 +40,7 @@ public class JsonAccountService implements AccountService{
         try {
             accounts = repository.loadAccounts();
         } catch (IOException ex) {
-            Logger.getLogger(JsonAccountService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
         return accounts.stream()
                 .filter(a -> a.getAccountNumber() == accountNumber)
