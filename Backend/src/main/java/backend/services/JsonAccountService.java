@@ -31,7 +31,7 @@ public class JsonAccountService implements AccountService{
     ObjectMapper objectMapper;
     private List<Account> accounts;
     
-    public JsonAccountService() throws IOException {
+    public JsonAccountService(){
         //accounts = repository.loadAccounts();
     }
     
