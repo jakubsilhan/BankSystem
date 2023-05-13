@@ -81,10 +81,16 @@
     "accountNumber" : 0,
     "currency" : "Česká koruna",
     "abbreviation" : "CZK",
-    "amount" : 12.0
+    "amount" : 1221.0
   } ],
   "movements" : [ {
     "amount" : "500 CZK",
     "day" : "2023-03-24"
+  }, {
+    "amount" : "+ 1263.0 CZK",
+    "day" : "2023-05-13"
+  }, {
+    "amount" : "- 54.0 CZK",
+    "day" : "2023-05-13"
   } ]
 } ]
