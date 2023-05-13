@@ -17,9 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -94,7 +98,7 @@ public class JsonAccountServiceTests {
         verify(mockRepository, times(1)).saveAccounts(anyList());
     }
     
-        @Test
+    @Test
     public void testWithdrawInsufficientFunds() throws IOException {
         Account account = accountService.findAccountByNumber(11111);
         PaymentDto payment = new PaymentDto("CZK", 2000);
@@ -106,7 +110,7 @@ public class JsonAccountServiceTests {
         verify(mockRepository, never()).saveAccounts(anyList());
     }
     
-        @Test
+    @Test
     public void testWithdrawCurrencyExchangeInsufficient() throws IOException {
         PaymentDto payment = new PaymentDto("USD", 100.0);
         when(exchangeService.ConvertToCZK("USD", 100.0)).thenReturn(2200.0);
@@ -154,12 +158,87 @@ public class JsonAccountServiceTests {
     }
     
     @Test
+    public void testBalancesToStringxception() throws JsonProcessingException{
+        Account account = accountService.findAccountByNumber(11111);
+        when(objectMapper.writeValueAsString(account.getBalances())).thenThrow(JsonProcessingException.class);
+        String result = accountService.balancesToString(11111);
+        assertEquals("Cannot load current balances",result);
+    }
+    
+    @Test
     public void testMovementsToString() throws JsonProcessingException{
         Account account = accountService.findAccountByNumber(11111);
         when(objectMapper.writeValueAsString(account.getMovements())).thenReturn("funguje");
         String result = accountService.movementsToString(11111);
         assertEquals("funguje",result);
     }
+    
+    @Test
+    public void testMovementsToStringxception() throws JsonProcessingException{
+        Account account = accountService.findAccountByNumber(11111);
+        when(objectMapper.writeValueAsString(account.getMovements())).thenThrow(JsonProcessingException.class);
+        String result = accountService.movementsToString(11111);
+        assertEquals("Cannot load current movements",result);
+    }
+    
+    @Test
+    public void testFindAccountByNumberIOException() throws IOException {
+        when(mockRepository.loadAccounts()).thenThrow(new IOException());
+        Account account = accountService.findAccountByNumber(12345);
+        assertEquals(null, account);
+    }
+    
+    @Test
+    public void testWithdrawIOException() throws IOException {
+        // Arrange
+        long accountNumber = 11111;
+        PaymentDto payment = new PaymentDto("USD",12.4);
+        when(exchangeService.ConvertToCZK(eq("USD"), anyDouble())).thenThrow(new IOException());
+        // Act
+        String result = accountService.withdraw(accountNumber, payment);
+
+        // Assert
+        assertEquals("Nepovedený přístup k databázi měn", result);             
+    }
+    
+    @Test
+    public void testWithdrawIOException2() throws IOException {
+        // Arrange
+        long accountNumber = 11111;
+        PaymentDto payment = new PaymentDto("CZK",12.4);
+        doThrow(new IOException()).when(mockRepository).saveAccounts(testAccounts);
+        // Act
+        String result = accountService.withdraw(accountNumber, payment);
+
+        // Assert
+        assertEquals("Nepovedený přístup k databázi účtů", result);             
+    }
+    
+    @Test
+    public void testDepositIOException() throws IOException {
+        // Arrange
+        long accountNumber = 11111;
+        PaymentDto payment = new PaymentDto("USD",12.4);
+        when(exchangeService.ConvertToCZK(eq("USD"), anyDouble())).thenThrow(new IOException());
+        // Act
+        String result = accountService.deposit(accountNumber, payment);
+
+        // Assert
+        assertEquals("Nepovedený přístup k databázi měn", result);             
+    }
+    
+    @Test
+    public void testDepositIOException2() throws IOException {
+        // Arrange
+        long accountNumber = 11111;
+        PaymentDto payment = new PaymentDto("CZK",12.4);
+        doThrow(new IOException()).when(mockRepository).saveAccounts(testAccounts);
+        // Act
+        String result = accountService.deposit(accountNumber, payment);
+
+        // Assert
+        assertEquals("Nepovedený přístup k databázi účtů", result);             
+    }    
     
     @Test
     public void testRoundDouble() {
