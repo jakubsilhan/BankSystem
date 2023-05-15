@@ -9,6 +9,13 @@ jobs:
    deploy-job:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+           mkdir ../build
+           cp -TR . ../build
+           tar -cvf deploy.tar ../build/
       - name: SSH to server and run docker compose
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -18,15 +25,14 @@ jobs:
           port: 22
           script: |
             echo "Ahoj Já jsem, deploy"
-      - name: Checkout folder
-        uses: actions/checkout@v3
+            
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.4
         with:
            host: ${{ secrets.SSH_HOST }}
            username: ${{ secrets.SSH_USER }}
            key: ${{ secrets.SSH_KEY }}
-           source: "./*/**"
+           source: "deploy.tar"
            target: "/deploy/kuba-silhan-repo"
            script: |
              echo "Funguješ?"
