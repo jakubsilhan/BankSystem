@@ -44,6 +44,6 @@ jobs:
                cat /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
                cd /home/deploy/kuba-silhan-repo/build/Backend
                mvn clean install
-               cp -r  /home/deploy/kuba-silhan-repo/build/Backend/data  /home/deploy/kuba-silhan-repo/build/Backend/target
-               cd  /home/deploy/kuba-silhan-repo/build/Backend/target
-               jar -jar Backend-0.0.1-SNAPSHOT.jar
+              # cp -r  /home/deploy/kuba-silhan-repo/build/Backend/data  /home/deploy/kuba-silhan-repo/build/Backend/target
+               # cd  /home/deploy/kuba-silhan-repo/build/Backend/target
+              # jar -jar Backend-0.0.1-SNAPSHOT.jar
