@@ -29,7 +29,7 @@ jobs:
              echo "Funguješ?"
 
 
-      - name: SSH to server and run docker compose
+      - name: Deploy and run
         uses: appleboy/ssh-action@v0.1.10
         with:
              host: ${{ secrets.SSH_HOST }}
@@ -47,4 +47,6 @@ jobs:
                BANK_ENV=prod mvn clean install
                cp -r  /home/deploy/kuba-silhan-repo/build/Backend/data  /home/deploy/kuba-silhan-repo/build/Backend/target
                cd  /home/deploy/kuba-silhan-repo/build/Backend/target
-               BANK_ENV=prod java -jar Backend-0.0.1-SNAPSHOT.jar
+               pm2 delete "Kubova Banka"
+               pm2 start "BANK_ENV=prod java -jar Backend-0.0.1-SNAPSHOT.jar" --name "Kubova Banka"
+             
