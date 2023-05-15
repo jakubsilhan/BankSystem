@@ -6,6 +6,8 @@
 <script>
 import pageFooter from './components/pageFooter.vue'
 import  axios from 'axios';
+console.log("URL",process.env.URL) 
+console.log("MOREEE")
 export default {
   name: 'App',
   methods: {
@@ -16,7 +18,7 @@ export default {
     },
     // endpoint ve formátu /api/blablba
     async authApiCall(endpoint = "", body={}) {
-      const response = await axios.post(`http://localhost:8081${endpoint}`, body, { headers: { Authorization: `Bearer ${this.getToken()}` } })
+      const response = await axios.post(`${process.env.VUE_APP_API_URL}${endpoint}`, body, { headers: { Authorization: `Bearer ${this.getToken()}` } })
       return response.data;
     },
   },
