@@ -18,3 +18,13 @@ jobs:
           port: 22
           script: |
             echo "Ahoj Já jsem, deploy"
+      - name: Checkout folder
+      - uses: actions/checkout@v3
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+           host: ${{ secrets.SSH_HOST }}
+           username: ${{ secrets.SSH_USER }}
+           key: ${{ secrets.SSH_KEY }}
+           source: "."
+           target: "/deploy/kuba-silhan"
