@@ -42,8 +42,8 @@ jobs:
                printf "\n${{secrets.SECRET_PASSWORD}}" >> /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
                printf "\n${{secrets.SECRET_TOKEN}}"  >> /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
                cat /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
-               cd /build/Backend
+               cd /home/deploy/kuba-silhan-repo/build/Backend
                mvn clean install
-               cp -r /data /target
-               cd /target
+               cp -r  /home/deploy/kuba-silhan-repo/build/Backend/data  /home/deploy/kuba-silhan-repo/build/Backend/target
+               cd  /home/deploy/kuba-silhan-repo/build/Backend/target
                jar -jar Backend-0.0.1-SNAPSHOT.jar
