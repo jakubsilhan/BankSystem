@@ -33,6 +33,6 @@ jobs:
            username: ${{ secrets.SSH_USER }}
            key: ${{ secrets.SSH_KEY }}
            source: "deploy.tar"
-           target: "/deploy/kuba-silhan-repo"
+           target: "/home/deploy/kuba-silhan-repo"
            script: |
              echo "Funguješ?"
