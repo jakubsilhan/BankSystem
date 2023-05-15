@@ -49,4 +49,7 @@ jobs:
                cd  /home/deploy/kuba-silhan-repo/build/Backend/target
                pm2 delete "Kubova Banka"
                pm2 start "BANK_ENV=prod java -jar Backend-0.0.1-SNAPSHOT.jar" --name "Kubova Banka"
-             
+               
+               cd /home/deploy/kuba-silhan-repo/build/Frontend/bank-app/
+               npm run build
+               cp -r /home/deploy/kuba-silhan-repo/build/Frontend/bank-app/dist/* /home/deploy/kuba-silhan
