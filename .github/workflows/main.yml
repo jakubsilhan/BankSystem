@@ -9,12 +9,48 @@ jobs:
    deploy-job:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH to server and run docker compose
+      - uses: actions/checkout@v3
+        # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+           mkdir ../build
+           cp -TR . ../build
+           tar -cvf deploy.tar ../build/
+ 
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+           host: ${{ secrets.SSH_HOST }}
+           username: ${{ secrets.SSH_USER }}
+           key: ${{ secrets.SSH_KEY }}
+           source: "deploy.tar"
+           target: "/home/deploy/kuba-silhan-repo"
+           script: |
+             echo "Funguješ?"
+
+
+      - name: Deploy and run
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script: |
-            echo "Ahoj Já jsem, deploy"
+             host: ${{ secrets.SSH_HOST }}
+             username: ${{ secrets.SSH_USER }}
+             key: ${{ secrets.SSH_KEY }}
+             port: 22
+             script: |
+               source /etc/profile.d/maven.sh
+               cd /home/deploy/kuba-silhan-repo
+               tar -xvf deploy.tar
+               printf "\n${{secrets.SECRET_PASSWORD}}" >> /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
+               printf "\n${{secrets.SECRET_TOKEN}}"  >> /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
+               cat /home/deploy/kuba-silhan-repo/build/Backend/src/main/resources/application.properties
+               cd /home/deploy/kuba-silhan-repo/build/Backend
+               BANK_ENV=prod mvn clean install
+               cp -r  /home/deploy/kuba-silhan-repo/build/Backend/data  /home/deploy/kuba-silhan-repo/build/Backend/target
+               cd  /home/deploy/kuba-silhan-repo/build/Backend/target
+               pm2 delete "Kubova Banka"
+               pm2 start "BANK_ENV=prod java -jar Backend-0.0.1-SNAPSHOT.jar" --name "Kubova Banka"
+               
+               cd /home/deploy/kuba-silhan-repo/build/FrontEnd/bank-app
+               npm i
+               npm run build
+               cp -r /home/deploy/kuba-silhan-repo/build/FrontEnd/bank-app/dist/* /home/deploy/kuba-silhan
