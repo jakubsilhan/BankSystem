@@ -52,5 +52,5 @@ jobs:
                
                cd /home/deploy/kuba-silhan-repo/build/FrontEnd/bank-app
                npm i
-               VUE_APP_API_URL=http://pavel-vacha.cz:8082 npm run build
+               VUE_APP_API_URL=https://kubabank.pavel-vacha.cz npm run build
                cp -r /home/deploy/kuba-silhan-repo/build/FrontEnd/bank-app/dist/* /home/deploy/kuba-silhan
