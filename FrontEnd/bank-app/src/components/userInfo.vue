@@ -1,8 +1,9 @@
 <template>
     <div class = "infoBox">
-        <p> jméno: {{ user.name }}<br>
-            email: {{ user.email }} <br>
-            číslo účtu: {{ user.accountNumber }}
+        <p> Jméno: {{ user.username }}<br>
+            Email: {{ user.email }} <br>
+            Číslo účtu: {{ user.accountNumber }} <br>
+            Datum aktualizace kurzů: {{ currencyDate }} <br>
         </p>
     </div>
 </template>
@@ -11,7 +12,8 @@
 export default{
     name: "userInfo",
     props :{
-        user: Object
+        user: Object,
+        currencyDate: String
 
     }
 }

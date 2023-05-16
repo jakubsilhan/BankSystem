@@ -1,16 +1,16 @@
 [
 	{
       "id":1,
-      "username": "Jakub Silhan",
-      "email": "pokus",
+      "username": "Jakub Šilhán",
+      "email": "kubix448@gmail.com",
       "password": "12345",
-      "accountNumber": 1
+      "accountNumber": 12345
 	},
 	{
       "id":2,
       "username": "Pavel Vacha",
-      "email": "john.doe2@gmail.com",
-      "password": "12345",
-      "accountNumber": 2
+      "email": "kubix8@seznam.cz",
+      "password": "54321",
+      "accountNumber": 54321
 	}
 ]

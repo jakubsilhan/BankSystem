@@ -1,0 +1,105 @@
+[ {
+  "accountNumber" : 12345,
+  "balances" : [ {
+    "accountNumber" : 0,
+    "currency" : "Česká koruna",
+    "abbreviation" : "CZK",
+    "amount" : 12273.53
+  }, {
+    "accountNumber" : 0,
+    "currency" : "Dolar",
+    "abbreviation" : "USD",
+    "amount" : 66.5
+  } ],
+  "movements" : [ {
+    "amount" : "+ 24 CZK",
+    "day" : "2023-05-07"
+  }, {
+    "amount" : "+ 24 CZK",
+    "day" : "2023-05-07"
+  }, {
+    "amount" : "+ 4 CZK",
+    "day" : "2023-05-07"
+  }, {
+    "amount" : "- 4 CZK",
+    "day" : "2023-05-07"
+  }, {
+    "amount" : "+ 5.1 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "+ 5.27 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "+ 1.24 USD",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 10.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 10.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 2.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 2.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 10.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 5.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 5.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 2.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 78.53 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 4.5 USD",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "+ 120.0 CZK",
+    "day" : "2023-05-08"
+  }, {
+    "amount" : "- 53.82 CZK",
+    "day" : "2023-05-10"
+  }, {
+    "amount" : "- 36.9 CZK",
+    "day" : "2023-05-10"
+  }, {
+    "amount" : "- 1.0 CZK",
+    "day" : "2023-05-11"
+  }, {
+    "amount" : "- 10.0 CZK",
+    "day" : "2023-05-16"
+  }, {
+    "amount" : "- 1.0 USD",
+    "day" : "2023-05-16"
+  }, {
+    "amount" : "- 23.57 CZK",
+    "day" : "2023-05-16"
+  } ]
+}, {
+  "accountNumber" : 54321,
+  "balances" : [ {
+    "accountNumber" : 0,
+    "currency" : "Česká koruna",
+    "abbreviation" : "CZK",
+    "amount" : 1221.0
+  } ],
+  "movements" : [ {
+    "amount" : "500 CZK",
+    "day" : "2023-03-24"
+  }, {
+    "amount" : "+ 1263.0 CZK",
+    "day" : "2023-05-13"
+  }, {
+    "amount" : "- 54.0 CZK",
+    "day" : "2023-05-13"
+  } ]
+} ]

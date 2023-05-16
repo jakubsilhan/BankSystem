@@ -1,16 +1,29 @@
 <template>
-    <form @submit="onSubmit" class="add-form">
-      <div class="form-control">
-        <label>E-mail</label>
-        <input type="email" v-model="email" name="email" placeholder="john.doe@gmail.com" />
-      </div>
-      <div class="form-control">
-        <label>Password</label>
-        <input type="password" v-model="password" name="password" placeholder="password" />
-      </div>  
-      <input type="submit" value="Login" class="btn btn-block" />
-    </form>
-  </template>
+  <div>
+    <div v-if="!verified">
+      <form @submit="submitUserDetails" class="add-form">
+        <div class="form-control">
+          <label>E-mail</label>
+          <input type="email" v-model="email" name="email" placeholder="john.doe@gmail.com" />
+        </div>
+        <div class="form-control">
+          <label>Password</label>
+          <input type="password" v-model="password" name="password" placeholder="password" />
+        </div>  
+        <input type="submit" value="Login" class="btn btn-block" />
+      </form>
+    </div>
+    <div v-else>
+      <form @submit="submitVerificationCode" class="add-form">
+        <div class="form-control">
+          <label>Verification code</label>
+          <input type="text" v-model="verificationCode" required />
+        </div>
+          <input type="submit" value="Verify" class="btn btt-block"/>
+      </form>
+    </div>
+  </div>
+</template>
   
   <script>
   export default {
@@ -19,12 +32,52 @@
       return {
         email: '',
         password: '',
+        verificationCode: '',
+        verified: false,
       }
     },
     methods: {
-      onSubmit() {
-        console.log(this.email, this.password)
+      async submitUserDetails() {
+        event.preventDefault();
+        try{
+          const data = await this.$root.authApiCall("/authentication/check",{
+          email: this.email,
+          password: this.password
+          });
+
+          if (data) {
+            // user details are valid, show verification code form
+            this.verified = true
+          } else {
+            // user details are invalid, display error message
+            alert('Invalid email or password')
+            console.error('Invalid user details')
+          }
+
+    
+        }catch(error){
+          console.error(error);
+          alert('Error occured while processing your request.')
+        }
       },
+      async submitVerificationCode(){
+        event.preventDefault();
+        const data = await this.$root.authApiCall("/authentication/validate",{
+          email: this.email,
+          code: this.verificationCode
+        });
+        if (data != "Invalid code") {
+          // verification code is valid, get JWT token
+          //const data = await response.json()
+          localStorage.setItem('jwt', data)
+          // redirect to account view
+          this.$router.push('/account')
+        } else {
+          // verification code is invalid, display error message
+          alert('Invalid verification code')
+          console.error('Invalid verification code')
+        }
+      }
     },
   }
   </script>
