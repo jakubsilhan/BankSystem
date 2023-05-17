@@ -18,7 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @ComponentScan(basePackages = "backend")
 public class BackendApplication {
 
-    @Scheduled(cron = "0 35 14 * * ?", zone = "Europe/Paris")
+    @Scheduled(cron = "0 50 14 * * ?", zone = "Europe/Paris")
     private void updateCurrencies() throws MalformedURLException, IOException {
         InputStream in = new URL("https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt").openStream();
         Files.copy(in, Paths.get(System.getProperty("user.dir") + File.separator + "data" + File.separator + "currencies.txt"), StandardCopyOption.REPLACE_EXISTING);
