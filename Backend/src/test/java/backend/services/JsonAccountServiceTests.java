@@ -85,6 +85,20 @@ public class JsonAccountServiceTests {
         verify(mockRepository, times(1)).saveAccounts(anyList());
     }
     
+        @Test
+    public void testWithdrawInterest() throws IOException {
+        Account account = accountService.findAccountByNumber(11111);
+        // Make a withdrawal of 500 CZK from the test account
+        PaymentDto payment = new PaymentDto("CZK", 1600);
+        String result = accountService.withdraw(account.getAccountNumber(), payment);
+
+        // Check that the withdrawal was successful and the account balance was updated
+        assertEquals("Platba úspěšná", result);
+        assertEquals(-110, account.getBalances().get(0).getAmount(), 0.001);
+        assertEquals("- 1610.0 CZK", account.getMovements().get(1).getAmount());
+        verify(mockRepository, times(1)).saveAccounts(anyList());
+    }
+    
     @Test
     public void testWithdrawCurrencyExchange() throws IOException {
         PaymentDto payment = new PaymentDto("USD", 50.0);
@@ -97,6 +111,8 @@ public class JsonAccountServiceTests {
         assertEquals("- 1100.0 CZK", account.getMovements().get(1).getAmount());
         verify(mockRepository, times(1)).saveAccounts(anyList());
     }
+    
+    
     
     @Test
     public void testWithdrawInsufficientFunds() throws IOException {
