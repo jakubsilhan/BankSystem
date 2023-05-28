@@ -50,20 +50,24 @@ public class JsonAccountService implements AccountService{
     
     @Override
     public String withdraw(long accountNumber, PaymentDto payment){
+        double margin;
         Account account = findAccountByNumber(accountNumber);
         payment.setAmmount(Math.abs(payment.getAmmount()));
         Balance balance = account.getBalances().stream()
                 .filter(b -> b.getAbbreviation().equals(payment.getCurrencyAbbreviation()))
                 .findFirst()
                 .orElse(null);
-        if(balance==null || !(balance.getAbbreviation().equals(payment.getCurrencyAbbreviation())) && balance.getAmount()<payment.getAmmount()){            
+        //uzivatel nema ucet v mene
+        if(balance==null || !(balance.getAbbreviation().equals("CZK")) && (balance.getAmount()+(balance.getAmount()*0.1))<payment.getAmmount()){            
             try {
                 double exchanged = exchangeService.ConvertToCZK(payment.getCurrencyAbbreviation(), payment.getAmmount());
                 balance = account.getBalances().stream()
                     .filter(b -> b.getAbbreviation().equals("CZK"))
                     .findFirst()
                     .orElse(null);
-                if(balance.getAmount()<exchanged){
+                //kontrola margin
+                margin = balance.getAmount()+0.1*balance.getAmount();
+                if(exchanged>margin){
                     return "Nedostatek prostředků";
                 }
                 payment.setCurrencyAbbreviation("CZK");
@@ -72,8 +76,15 @@ public class JsonAccountService implements AccountService{
                 return "Nepovedený přístup k databázi měn";
             }
         }
-        if(balance.getAmount()<payment.getAmmount()){
+        //kontrola margin
+        margin = balance.getAmount()+0.1*balance.getAmount();
+        if(payment.getAmmount()>margin){
             return "Nedostatek prostředků";
+        }
+        //pridani uroku
+        if(payment.getAmmount()>balance.getAmount()){
+            double interest = (payment.getAmmount()-balance.getAmount())*0.1;
+            payment.setAmmount(payment.getAmmount()+interest);
         }
         payment.setAmmount(roundDouble(payment.getAmmount()));
         balance.setAmount(roundDouble(balance.getAmount()-payment.getAmmount()));

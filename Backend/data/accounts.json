@@ -4,12 +4,12 @@
     "accountNumber" : 0,
     "currency" : "Česká koruna",
     "abbreviation" : "CZK",
-    "amount" : 12273.53
+    "amount" : 1000
   }, {
     "accountNumber" : 0,
     "currency" : "Dolar",
     "abbreviation" : "USD",
-    "amount" : 66.5
+    "amount" : 100
   } ],
   "movements" : [ {
     "amount" : "+ 24 CZK",
